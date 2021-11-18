@@ -1,10 +1,19 @@
 import {
   ApplicationCommandPermissions,
+  ButtonInteraction,
   CommandInteraction,
   Guild,
   GuildMember,
+  MessageActionRow,
+  MessageButton,
 } from "discord.js";
-import { Discord, Permission, Slash, SlashOption } from "discordx";
+import {
+  ButtonComponent,
+  Discord,
+  Permission,
+  Slash,
+  SlashOption,
+} from "discordx";
 
 @Discord()
 class groupuscules {
@@ -16,7 +25,7 @@ class groupuscules {
   @Slash("groupuscules", {
     description: "Affichage de la repartition des groupes",
   })
-  groupuscules(
+  async groupuscules(
     @SlashOption("nmax", {
       description: "Personnes max par groupes",
       required: true,
@@ -28,6 +37,17 @@ class groupuscules {
       interaction.reply("Error");
       return;
     }
+
+    await interaction.deferReply();
+
+    const moveButton = new MessageButton()
+      .setLabel("Deplacer")
+      .setEmoji("⬇️")
+      .setStyle("PRIMARY")
+      .setCustomId("move-btn");
+
+    const row = new MessageActionRow().addComponents(moveButton);
+
     // const users =
     //   interaction.member.voice.channel?.members.map((m) => m.user.username) ||
     //   [];
@@ -67,6 +87,27 @@ class groupuscules {
       )
       .join("");
 
-    interaction.reply(response);
+    interaction.editReply({
+      content: response,
+      components: [row],
+    });
+    // interaction.reply(response);
+  }
+
+  @ButtonComponent("move-btn")
+  moveButton(interaction: ButtonInteraction) {
+    const groups = interaction.message.content
+      .split(`🔊 Salon `)
+      .slice(1)
+      .map((g) =>
+        g
+          .split(":\n|   ")
+          .slice(1)
+          .join("")
+          .split(`\n|   `)
+          .map((u) => u.replace(/\n/g, ""))
+      );
+
+    interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
   }
 }
