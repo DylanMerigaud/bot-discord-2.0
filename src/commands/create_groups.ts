@@ -3,6 +3,7 @@ import {
   ButtonInteraction,
   CommandInteraction,
   Guild,
+  GuildVoiceChannelResolvable,
   GuildMember,
   MessageActionRow,
   MessageButton,
@@ -12,20 +13,29 @@ import {
   Discord,
   Permission,
   Slash,
+  SlashGroup,
   SlashOption,
 } from "discordx";
 
+const isAdmin = (guild: Guild): ApplicationCommandPermissions => {
+  const adminRole = guild.roles.cache.find((r) => r.name === "admin");
+  return { id: adminRole?.id || "", permission: true, type: "ROLE" };
+}; // todo: use the utils one (cant import error)
+
+const channelLabel = `🔊 Salon`;
+const getChannelName = (index: number) => `${channelLabel} ${index}`;
+
+const groupsCategoryName = `Groupuscules`;
+
 @Discord()
+@SlashGroup("groupuscules", "Partie de la reunion en petit commite")
 class groupuscules {
   @Permission(false)
-  @Permission((guild: Guild): ApplicationCommandPermissions => {
-    const adminRole = guild.roles.cache.find((r) => r.name === "admin"); // add delay
-    return { id: adminRole?.id || "", permission: true, type: "ROLE" };
-  })
-  @Slash("groupuscules", {
+  @Permission(isAdmin)
+  @Slash("creategroups", {
     description: "Affichage de la repartition des groupes",
   })
-  async groupuscules(
+  async createGroups(
     @SlashOption("nmax", {
       description: "Personnes max par groupes",
       required: true,
@@ -52,7 +62,8 @@ class groupuscules {
     //   interaction.member.voice.channel?.members.map((m) => m.user.username) ||
     //   [];
 
-    const users = [...Array(30)].map(() => {
+    const users = [...Array(30)].map((n, i) => {
+      if (i === 0) return interaction.user.username;
       const randomStr = "abcdefghijklmnopqrstuvwxyz"
         .split("")
         .sort(() => 0.5 - Math.random())
@@ -64,7 +75,7 @@ class groupuscules {
       (resultArray: Array<Array<String>>, item, index) => {
         const chunkIndex = Math.floor(index / nmax);
         if (!resultArray[chunkIndex]) {
-          resultArray[chunkIndex] = []; // start a new chunk
+          resultArray[chunkIndex] = [];
         }
         resultArray[chunkIndex].push(item);
         return resultArray;
@@ -83,7 +94,8 @@ class groupuscules {
 
     const response = groups
       .map(
-        (g, i) => `🔊 Salon ${i + 1}:\n${g.map((u) => `|   ${u}\n`).join("")}\n`
+        (g, i) =>
+          `${getChannelName(i + 1)}:\n${g.map((u) => `|   ${u}\n`).join("")}\n`
       )
       .join("");
 
@@ -95,9 +107,9 @@ class groupuscules {
   }
 
   @ButtonComponent("move-btn")
-  moveButton(interaction: ButtonInteraction) {
+  async moveButton(interaction: ButtonInteraction) {
     const groups = interaction.message.content
-      .split(`🔊 Salon `)
+      .split(`${channelLabel} `)
       .slice(1)
       .map((g) =>
         g
@@ -108,6 +120,58 @@ class groupuscules {
           .map((u) => u.replace(/\n/g, ""))
       );
 
-    interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
+    const groupsCategory =
+      interaction.guild?.channels.cache.find(
+        (channel) => channel.name === groupsCategoryName
+      ) ||
+      (await interaction.guild?.channels.create(groupsCategoryName, {
+        type: "GUILD_CATEGORY",
+      }));
+
+    groups.forEach(async (group, index) => {
+      const channelToMoveMember =
+        interaction.guild?.channels.cache.find(
+          (channel) => channel.name === getChannelName(index + 1)
+        ) ||
+        (await interaction.guild?.channels.create(getChannelName(index + 1), {
+          type: "GUILD_VOICE",
+          parent: groupsCategory?.id,
+        }));
+      if (channelToMoveMember)
+        group.forEach((memberDisplayName) => {
+          const member = interaction.guild?.members.cache.find(
+            (member) => member.displayName === memberDisplayName
+          );
+          if (member?.voice.channel)
+            member?.voice.setChannel(channelToMoveMember.id);
+        });
+    });
+
+    interaction.reply(`👍`);
+
+    // interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
+  }
+
+  @Permission(false)
+  @Permission(isAdmin)
+  @Slash("deletegroups", {
+    description: "Supprime les cannaux de groupes",
+  })
+  async deleteGroups(interaction: CommandInteraction) {
+    const groupsCategory = interaction.guild?.channels.cache.find(
+      (channel) => channel.name === groupsCategoryName
+    );
+
+    const channelsToDelete = interaction.guild?.channels.cache.filter(
+      (channel) =>
+        channel.parentId === groupsCategory?.id &&
+        channel.name.startsWith(channelLabel)
+    );
+
+    channelsToDelete?.forEach((channel) => {
+      channel.delete();
+    });
+
+    interaction.reply(`👍`);
   }
 }
