@@ -131,7 +131,9 @@ class groupuscules {
     groups.forEach(async (group, index) => {
       const channelToMoveMember =
         interaction.guild?.channels.cache.find(
-          (channel) => channel.name === getChannelName(index + 1)
+          (channel) =>
+            channel.parentId === groupsCategory?.id &&
+            channel.name === getChannelName(index + 1)
         ) ||
         (await interaction.guild?.channels.create(getChannelName(index + 1), {
           type: "GUILD_VOICE",
