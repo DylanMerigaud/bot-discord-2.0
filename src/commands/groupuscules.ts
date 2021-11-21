@@ -54,18 +54,19 @@ class groupuscules {
 
     const row = new MessageActionRow().addComponents(moveButton);
 
-    // const users =
-    //   interaction.member.voice.channel?.members.map((m) => m.user.username) ||
-    //   [];
-
-    const users = [...Array(30)].map((n, i) => {
-      if (i === 0) return interaction.user.username;
-      const randomStr = "abcdefghijklmnopqrstuvwxyz"
-        .split("")
-        .sort(() => 0.5 - Math.random())
-        .join("");
-      return randomStr.slice(0, Math.random() * 26 + 2);
-    });
+    const users =
+      process.env.DEBUG !== "true"
+        ? interaction.member.voice.channel?.members.map(
+            (m) => m.user.username
+          ) || []
+        : [...Array(30)].map((n, i) => {
+            if (i === 0) return interaction.user.username;
+            const randomStr = "abcdefghijklmnopqrstuvwxyz"
+              .split("")
+              .sort(() => 0.5 - Math.random())
+              .join("");
+            return randomStr.slice(0, Math.random() * 26 + 2);
+          });
 
     const groups = users.reduce(
       (resultArray: Array<Array<String>>, item, index) => {
