@@ -40,19 +40,9 @@ class groupuscules {
     interaction: CommandInteraction
   ) {
     if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("Error: interaction.member instanceof GuildMember");
+      interaction.reply("Erreur: interaction.member instanceof GuildMember");
       return;
     }
-
-    await interaction.deferReply();
-
-    const moveButton = new MessageButton()
-      .setLabel("Deplacer")
-      .setEmoji("⬇️")
-      .setStyle("PRIMARY")
-      .setCustomId("move-btn");
-
-    const row = new MessageActionRow().addComponents(moveButton);
 
     const users =
       process.env.DEBUG !== "true"
@@ -67,6 +57,22 @@ class groupuscules {
               .join("");
             return randomStr.slice(0, Math.random() * 26 + 2);
           });
+    if (users.length === 0)
+      return interaction.reply(
+        `❌ Vous devez etre dans un channel vocal avant de lancer la commande`
+      );
+
+    if (nmax < 1) return interaction.reply(`❌ nmax doit etre superieur a 0`);
+
+    await interaction.deferReply();
+
+    const moveButton = new MessageButton()
+      .setLabel("Deplacer")
+      .setEmoji("⬇️")
+      .setStyle("PRIMARY")
+      .setCustomId("move-btn");
+
+    const row = new MessageActionRow().addComponents(moveButton);
 
     const groups = users.reduce(
       (resultArray: Array<Array<String>>, item, index) => {
@@ -158,7 +164,7 @@ class groupuscules {
   })
   async deleteGroups(interaction: CommandInteraction) {
     if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("Error: interaction.member instanceof GuildMember");
+      interaction.reply("Erreur: interaction.member instanceof GuildMember");
       return;
     }
 
