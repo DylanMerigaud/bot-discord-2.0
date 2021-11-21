@@ -8,11 +8,4 @@ export abstract class AppDiscord {
   onMessage([message]: ArgsOf<"messageDelete">, client: Client) {
     console.log("Message Deleted", client.user?.username, message.content);
   }
-
-  @On("guildCreate")
-  async addBotUserRole(guild: Guild) {
-    // console.log('addBotUserRole')
-    // console.log(guild.roles)
-    // if (await guild.roles) console.log('admin exist')
-  }
 }

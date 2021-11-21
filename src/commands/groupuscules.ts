@@ -16,11 +16,7 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-
-const isAdmin = (guild: Guild): ApplicationCommandPermissions => {
-  const adminRole = guild.roles.cache.find((r) => r.name === "admin");
-  return { id: adminRole?.id || "", permission: true, type: "ROLE" };
-}; // todo: use the utils one (cant import error)
+import isAdmin from "../utils/isAdmin";
 
 const channelLabel = `🔊 Salon`;
 const getChannelName = (index: number) => `${channelLabel} ${index}`;
@@ -160,6 +156,11 @@ class groupuscules {
     description: "Supprime les cannaux de groupes",
   })
   async deleteGroups(interaction: CommandInteraction) {
+    if (!(interaction.member instanceof GuildMember)) {
+      interaction.reply("Error");
+      return;
+    }
+
     const groupsCategory = interaction.guild?.channels.cache.find(
       (channel) => channel.name === groupsCategoryName
     );
@@ -170,7 +171,22 @@ class groupuscules {
         channel.name.startsWith(channelLabel)
     );
 
+    const userIsInFutureDeletedChannel = !!channelsToDelete?.find(
+      (channel) =>
+        channel.id === (interaction.member as GuildMember).voice.channelId
+    );
+
     channelsToDelete?.forEach((channel) => {
+      if (channel.isVoice())
+        channel.members.forEach((member) => {
+          if (
+            (interaction.member as GuildMember).voice.channelId &&
+            !userIsInFutureDeletedChannel
+          )
+            member.voice.setChannel(
+              (interaction.member as GuildMember).voice.channelId
+            );
+        });
       channel.delete();
     });
 
