@@ -18,7 +18,7 @@ import {
 } from "discordx";
 import isAdmin from "../utils/isAdmin";
 
-const channelLabel = `🔊 Salon`;
+const channelLabel = `Salon`;
 const getChannelName = (index: number) => `${channelLabel} ${index}`;
 
 const groupsCategoryName = `Groupuscules`;
@@ -40,7 +40,7 @@ class groupuscules {
     interaction: CommandInteraction
   ) {
     if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("Error");
+      interaction.reply("Error: interaction.member instanceof GuildMember");
       return;
     }
 
@@ -145,7 +145,7 @@ class groupuscules {
         });
     });
 
-    interaction.reply(`👍`);
+    interaction.reply(`${groups.length} Canaux ont ete ajoutés 👍`);
 
     // interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
   }
@@ -157,7 +157,7 @@ class groupuscules {
   })
   async deleteGroups(interaction: CommandInteraction) {
     if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("Error");
+      interaction.reply("Error: interaction.member instanceof GuildMember");
       return;
     }
 
@@ -190,6 +190,6 @@ class groupuscules {
       channel.delete();
     });
 
-    interaction.reply(`👍`);
+    interaction.reply(`${channelsToDelete?.size} Canaux ont ete supprimés 👍`);
   }
 }
