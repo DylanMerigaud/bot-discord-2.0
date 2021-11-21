@@ -17,7 +17,7 @@
     "build": "tsc",
     "dev:no-reload": "node -r dotenv/config --loader ts-node/esm/transpile-only --es-module-specifier-resolution=node src/client.ts",
     "dev": "nodemon -r dotenv/config --exec node --loader ts-node/esm/transpile-only --es-module-specifier-resolution=node src/client.ts",
-    "start": "node build/client.js"
+    "start": "node --es-module-specifier-resolution=node build/client.js"
   },
   "dependencies": {
     "@discordx/importer": "^1.1.2",
