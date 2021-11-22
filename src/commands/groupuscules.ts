@@ -40,7 +40,7 @@ class groupuscules {
     interaction: CommandInteraction
   ) {
     if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("Erreur: interaction.member instanceof GuildMember");
+      interaction.reply("❌ interaction.member instanceof GuildMember");
       return;
     }
 
@@ -59,10 +59,10 @@ class groupuscules {
           });
     if (users.length === 0)
       return interaction.reply(
-        `❌ Vous devez etre dans un channel vocal avant de lancer la commande`
+        `❗ Vous devez etre dans un channel vocal avant de lancer la commande`
       );
 
-    if (nmax < 1) return interaction.reply(`❌ nmax doit etre superieur a 0`);
+    if (nmax < 1) return interaction.reply(`❗ nmax doit etre superieur a 0`);
 
     await interaction.deferReply();
 
@@ -152,7 +152,7 @@ class groupuscules {
         });
     });
 
-    interaction.reply(`${groups.length} Canaux ont ete ajoutés 👍`);
+    interaction.reply(`✔️ ${groups.length} Canaux ont ete ajoutés`);
 
     // interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
   }
@@ -164,7 +164,7 @@ class groupuscules {
   })
   async deleteGroups(interaction: CommandInteraction) {
     if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("Erreur: interaction.member instanceof GuildMember");
+      interaction.reply("❌ interaction.member instanceof GuildMember");
       return;
     }
 
@@ -197,6 +197,6 @@ class groupuscules {
       channel.delete();
     });
 
-    interaction.reply(`${channelsToDelete?.size} Canaux ont ete supprimés 👍`);
+    interaction.reply(`✔️ ${channelsToDelete?.size} Canaux ont ete supprimés`);
   }
 }
