@@ -205,6 +205,6 @@ class groupuscules {
       channel.delete();
     });
 
-    interaction.reply(`✔️ ${channelsToDelete?.size} Canaux ont ete supprimés`);
+    interaction.reply(`✅ ${channelsToDelete?.size} Canaux ont ete supprimés`);
   }
 }
