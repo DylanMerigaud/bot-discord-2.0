@@ -158,13 +158,16 @@ class groupuscules {
         interaction.guild?.channels.cache.find(
           (channel) =>
             channel.parentId === groupsCategory?.id &&
-            channel.type === "GUILD_VOICE" &&
-            channel.name === getChannelName(index + 1)
+            channel.type === "GUILD_TEXT" &&
+            channel.name === convertToKebabCase(getChannelName(index + 1))
         ) ||
-        (await interaction.guild?.channels.create(getChannelName(index + 1), {
-          type: "GUILD_TEXT",
-          parent: groupsCategory?.id,
-        }));
+        (await interaction.guild?.channels.create(
+          convertToKebabCase(getChannelName(index + 1)),
+          {
+            type: "GUILD_TEXT",
+            parent: groupsCategory?.id,
+          }
+        ));
     });
 
     interaction.reply(`✔️ ${groups.length} Canaux ont ete ajoutés`);

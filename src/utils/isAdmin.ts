@@ -5,6 +5,4 @@ const isAdmin = (guild: Guild): ApplicationCommandPermissions => {
   return { id: adminRole?.id || "", permission: true, type: "ROLE" };
 };
 
-export { isAdmin };
-
 export default isAdmin;
