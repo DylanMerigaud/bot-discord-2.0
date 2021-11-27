@@ -34,9 +34,9 @@ class groupuscules {
   async createGroups(
     @SlashOption("nmax", {
       description: "Personnes max par groupes",
-      required: true,
+      required: false,
     })
-    nmax: number,
+    nmax: number = 4,
     interaction: CommandInteraction
   ) {
     if (!(interaction.member instanceof GuildMember)) {
