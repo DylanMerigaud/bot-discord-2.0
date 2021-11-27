@@ -112,7 +112,7 @@ class groupuscules {
   }
 
   @Permission(false)
-  @Permission(isAdmin)
+  // @Permission(isAdmin)
   @ButtonComponent("move-btn")
   async moveButton(interaction: ButtonInteraction) {
     const groups = interaction.message.content
@@ -170,7 +170,7 @@ class groupuscules {
         ));
     });
 
-    interaction.reply(`✔️ ${groups.length} Canaux ont ete ajoutés`);
+    interaction.reply(`✅ ${groups.length} Canaux ont ete ajoutés`);
 
     // interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
   }
