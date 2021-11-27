@@ -17,6 +17,7 @@ import {
   SlashOption,
 } from "discordx";
 import isAdmin from "../utils/isAdmin";
+import convertToKebabCase from "../utils/convertToKebabCase";
 
 const channelLabel = `Salon`;
 const getChannelName = (index: number) => `${channelLabel} ${index}`;
@@ -181,7 +182,8 @@ class groupuscules {
     const channelsToDelete = interaction.guild?.channels.cache.filter(
       (channel) =>
         channel.parentId === groupsCategory?.id &&
-        channel.name.startsWith(channelLabel)
+        (channel.name.startsWith(channelLabel) ||
+          channel.name.startsWith(convertToKebabCase(channelLabel)))
     );
 
     const userIsInFutureDeletedChannel = !!channelsToDelete?.find(
