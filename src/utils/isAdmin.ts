@@ -9,11 +9,7 @@ export const PermissionAdmin = (
 };
 
 const isAdmin = (user: User) => {
-  if (!(interaction.member instanceof GuildMember)) {
-    interaction.reply("❌ interaction.member instanceof GuildMember");
-    return;
-  }
-  if (user.)
+  throw new Error("not implemented");
 };
 
 export default isAdmin;
