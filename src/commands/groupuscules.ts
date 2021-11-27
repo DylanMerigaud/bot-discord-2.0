@@ -26,8 +26,7 @@ const groupsCategoryName = `Groupuscules`;
 @Discord()
 @SlashGroup("groupuscules", "Partie de la reunion en petit commite")
 class groupuscules {
-  @Permission(false)
-  @Permission(isAdmin)
+  @Permission(true)
   @Slash("creategroups", {
     description: "Affichage de la repartition des groupes",
   })
@@ -109,6 +108,8 @@ class groupuscules {
     // interaction.reply(response);
   }
 
+  @Permission(false)
+  @Permission(isAdmin)
   @ButtonComponent("move-btn")
   async moveButton(interaction: ButtonInteraction) {
     const groups = interaction.message.content
@@ -136,6 +137,7 @@ class groupuscules {
         interaction.guild?.channels.cache.find(
           (channel) =>
             channel.parentId === groupsCategory?.id &&
+            channel.type === "GUILD_VOICE" &&
             channel.name === getChannelName(index + 1)
         ) ||
         (await interaction.guild?.channels.create(getChannelName(index + 1), {
@@ -150,6 +152,10 @@ class groupuscules {
           if (member?.voice.channel)
             member?.voice.setChannel(channelToMoveMember.id);
         });
+      await interaction.guild?.channels.create(getChannelName(index + 1), {
+        type: "GUILD_TEXT",
+        parent: groupsCategory?.id,
+      });
     });
 
     interaction.reply(`✔️ ${groups.length} Canaux ont ete ajoutés`);
