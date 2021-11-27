@@ -136,7 +136,7 @@ class groupuscules {
       }));
 
     groups.forEach(async (group, index) => {
-      const channelToMoveMember =
+      const voiceChannel =
         interaction.guild?.channels.cache.find(
           (channel) =>
             channel.parentId === groupsCategory?.id &&
@@ -147,18 +147,24 @@ class groupuscules {
           type: "GUILD_VOICE",
           parent: groupsCategory?.id,
         }));
-      if (channelToMoveMember)
+      if (voiceChannel)
         group.forEach((memberDisplayName) => {
           const member = interaction.guild?.members.cache.find(
             (member) => member.displayName === memberDisplayName
           );
-          if (member?.voice.channel)
-            member?.voice.setChannel(channelToMoveMember.id);
+          if (member?.voice.channel) member?.voice.setChannel(voiceChannel.id);
         });
-      await interaction.guild?.channels.create(getChannelName(index + 1), {
-        type: "GUILD_TEXT",
-        parent: groupsCategory?.id,
-      });
+      const textChannel =
+        interaction.guild?.channels.cache.find(
+          (channel) =>
+            channel.parentId === groupsCategory?.id &&
+            channel.type === "GUILD_VOICE" &&
+            channel.name === getChannelName(index + 1)
+        ) ||
+        (await interaction.guild?.channels.create(getChannelName(index + 1), {
+          type: "GUILD_TEXT",
+          parent: groupsCategory?.id,
+        }));
     });
 
     interaction.reply(`✔️ ${groups.length} Canaux ont ete ajoutés`);
