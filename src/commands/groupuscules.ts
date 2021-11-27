@@ -13,7 +13,6 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import isAdmin from "../utils/isAdmin";
 import convertToKebabCase from "../utils/convertToKebabCase";
 
 const channelLabel = `Salon`;

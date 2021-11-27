@@ -10,6 +10,5 @@ export const PermissionAdmin = (
 
 const isAdmin = (user: User) => {
   throw new Error("not implemented");
+  return null;
 };
-
-export default isAdmin;
