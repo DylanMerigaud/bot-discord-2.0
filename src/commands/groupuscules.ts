@@ -63,6 +63,8 @@ class groupuscules {
       );
 
     if (nmax < 1) return interaction.reply(`❗ nmax doit etre superieur a 0`);
+    if (nmax > 101)
+      return interaction.reply(`❗ nmax doit etre inferieur ou égal à 100`);
 
     await interaction.deferReply();
 
