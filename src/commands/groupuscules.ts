@@ -1,9 +1,6 @@
 import {
-  ApplicationCommandPermissions,
   ButtonInteraction,
   CommandInteraction,
-  Guild,
-  GuildVoiceChannelResolvable,
   GuildMember,
   MessageActionRow,
   MessageButton,
@@ -27,7 +24,6 @@ const groupsCategoryName = `Groupuscules`;
 @Discord()
 @SlashGroup("groupuscules", "Partie de la reunion en petit commite")
 class groupuscules {
-  @Permission(true)
   @Slash("creategroups", {
     description: "Affichage de la repartition des groupes",
   })
@@ -108,13 +104,23 @@ class groupuscules {
       content: response,
       components: [row],
     });
-    // interaction.reply(response);
   }
 
-  @Permission(false)
-  // @Permission(isAdmin)
   @ButtonComponent("move-btn")
   async moveButton(interaction: ButtonInteraction) {
+    if (!(interaction.member instanceof GuildMember)) {
+      interaction.reply("❌ interaction.member instanceof GuildMember");
+      return;
+    }
+    if (!interaction.memberPermissions?.has("MOVE_MEMBERS"))
+      return interaction.reply(
+        "❌ vous n'avez pas la permission de deplacer des membres"
+      );
+    if (!interaction.memberPermissions?.has("MANAGE_CHANNELS"))
+      return interaction.reply(
+        "❌ vous n'avez pas la permission de gerer des canaux"
+      );
+
     const groups = interaction.message.content
       .split(`${channelLabel} `)
       .slice(1)
@@ -175,16 +181,17 @@ class groupuscules {
     // interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
   }
 
-  @Permission(false)
-  @Permission(isAdmin)
   @Slash("deletegroups", {
     description: "Supprime les cannaux de groupes",
   })
   async deleteGroups(interaction: CommandInteraction) {
-    if (!(interaction.member instanceof GuildMember)) {
-      interaction.reply("❌ interaction.member instanceof GuildMember");
-      return;
-    }
+    if (!(interaction.member instanceof GuildMember))
+      return interaction.reply("❌ interaction.member instanceof GuildMember");
+
+    if (!interaction.memberPermissions?.has("MANAGE_CHANNELS"))
+      return interaction.reply(
+        "❌ vous n'avez pas la permission de gerer des canaux"
+      );
 
     const groupsCategory = interaction.guild?.channels.cache.find(
       (channel) => channel.name === groupsCategoryName
