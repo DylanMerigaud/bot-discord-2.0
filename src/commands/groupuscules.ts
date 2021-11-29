@@ -175,7 +175,7 @@ class groupuscules {
         ));
     });
 
-    interaction.reply(`✅ ${groups.length} Canaux ont ete ajoutés`);
+    interaction.reply(`✅ ${groups.length * 2} Canaux ont ete ajoutés`);
 
     // interaction.reply(`${groups.map((g) => g.join("\n#")).join("\n\n/")}`);
   }
