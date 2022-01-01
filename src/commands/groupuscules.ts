@@ -13,8 +13,13 @@ import {
   SlashGroup,
   SlashOption,
 } from "discordx";
-import convertToKebabCase from "../utils/convertToKebabCase";
+// import convertToKebabCase from "../utils/convertToKebabCase";
 
+const convertToKebabCase = (toReplace: string) =>
+  toReplace
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
 const channelLabel = `Salon`;
 const getChannelName = (index: number) => `${channelLabel} ${index}`;
 
