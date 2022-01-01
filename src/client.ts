@@ -2,9 +2,6 @@ import "reflect-metadata";
 import { Intents, Interaction, Message } from "discord.js";
 import { Client } from "discordx";
 import { dirname, importx } from "@discordx/importer";
-import http from "http";
-
-const port = process.env.PORT || 3009;
 
 const client = new Client({
   simpleCommand: {
@@ -46,19 +43,6 @@ async function run() {
   // with ems
   await importx(dirname(import.meta.url) + "/{events,commands}/*.{ts,js}");
   client.login(process.env.BOT_TOKEN ?? ""); // provide your bot token
-
-  http
-    .createServer(function (req, res) {
-      res.write("Hello World!");
-      res.end();
-    })
-    .listen(port, function () {
-      console.log(`server start at port ${port}`); //the server object listens on port 3000
-    });
-  if (process.env.PROJECT_DOMAIN)
-    setInterval(() => {
-      http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-    }, 280000);
 }
 
 run();
