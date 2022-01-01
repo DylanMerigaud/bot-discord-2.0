@@ -15,20 +15,20 @@
   "main": "build/client.js",
   "scripts": {
     "build": "tsc",
-    "dev": "node -r dotenv/config --loader ts-node/esm/transpile-only --es-module-specifier-resolution=node src/client.ts",
-    "dev:watch": "nodemon -r dotenv/config --exec node --loader ts-node/esm/transpile-only --es-module-specifier-resolution=node src/client.ts",
-    "start": "node --es-module-specifier-resolution=node build/client.js"
+    "start": "node -r dotenv/config --loader ts-node/esm/transpile-only --es-module-specifier-resolution=node src/client.ts",
+    "dev": "nodemon -r dotenv/config --exec node --loader ts-node/esm/transpile-only --es-module-specifier-resolution=node src/client.ts",
+    "serve": "node -r dotenv/config build/client.js"
   },
   "dependencies": {
     "@discordx/importer": "^1.1.2",
     "@discordx/pagination": "^1.0.1",
-    "@discordx/utilities": "^3.2.0",
-    "discord.js": "^13.4.0",
-    "discordx": "^9.1.6",
+    "@discordx/utilities": "^3.3.0",
+    "discord.js": "^13.5.0",
+    "discordx": "^9.1.7",
+    "dotenv": "^10.0.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0",
